@@ -1,5 +1,5 @@
 # automated_tor-relay_report
-A simple script to send the relay admin a weekly report on Tor stats. This script assumes you've installed `sudo apt install mailx` and have setup accordingly. To run the script weekly, you can use a scheduling tool such as cron (as outlined below).
+A simple script to send the relay admin a weekly report on Tor stats and server activity (SSH, port scanning). This script assumes you've installed `sudo apt install mailx` and have setup accordingly. To run the script weekly, you can use a scheduling tool such as cron (as outlined below).
 
 1. Copy the script to a directory on your Tor server, such as `/usr/local/bin` and make the script executable with `chmod +x /usr/local/bin/auto_report.py`
 
