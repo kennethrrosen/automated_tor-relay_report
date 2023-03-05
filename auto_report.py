@@ -14,10 +14,16 @@ nyx_data = get_command_output(nyx_command, no_output_message='Unable to get Nyx 
 # Get Tor stats
 stats_command = ['sudo', 'cat', '/var/lib/tor/stats/hidserv-v3-stats', '/var/lib/tor/stats/hidserv-stats', '/var/lib/tor/stats/dirreq-stats', '/var/lib/tor/stats/bridge-stats']
 stats_data = get_command_output(stats_command)
+stats_data = stats_data.replace('\n', '<br>')
+if not stats_data:
+    stats_data = 'Nothing to show'
 
 # Get system logs for error messages
 log_command = ['grep', '-E', 'error|critical|fail|warning', '/var/log/syslog']
 log_data_filtered = get_command_output(log_command)
+log_data_filtered = log_data_filtered.replace('\n', '<br>')
+if not log_data_filtered:
+    log_data_filtered = 'Nothing to show'
 
 # Get SSH login attempts from the past 48 hours
 ssh_command = ['grep', 'sshd.*Failed', '/var/log/auth.log', '-n', f'-e "{(datetime.datetime.now() - datetime.timedelta(hours=48)).strftime("%b %d %H:%M:%S")}"']
