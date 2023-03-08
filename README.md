@@ -6,9 +6,9 @@ A simple script to send the relay admin a weekly report on Tor stats and server 
 2. Open the crontab configuration and add a new line to the crontab file with the following forma:
 ```
 crontab -e
-0 0 * * 0 /usr/local/bin/auto_report.py
+0 0 * * 1,3,5 python3 /usr/local/bin/auto_report.py
 ```
-NOTE: This will run the script every Sunday at midnight (0:00).
+NOTE: This will run the script M,W,F at Midnight.
 
 3. Save and exit the crontab file. Then restart the cron daemon to apply the changes.
 ```
