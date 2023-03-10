@@ -27,10 +27,6 @@ log_data_filtered = log_data_filtered.replace('\n', '<br>')
 if not log_data_filtered:
     log_data_filtered = 'Nothing to show'
 
-# Get SSH login attempts from the past 48 hours
-ssh_command = ['grep', 'sshd.*Failed', '/var/log/auth.log', '-n', f'-e "{(datetime.datetime.now() - datetime.timedelta(hours=48)).strftime("%b %d %H:%M:%S")}"']
-ssh_data = get_command_output(ssh_command)
-
 # Get system updates and upgrades
 upgrade_command = ['apt-get', 'upgrade', '-s']
 upgrade_data = get_command_output(upgrade_command)
@@ -39,15 +35,35 @@ upgrade_data = get_command_output(upgrade_command)
 nmap_command = ['grep', '-i', 'nmap', '/var/log/syslog']
 port_data = get_command_output(nmap_command)
 
+# Get postfix logs
+postfix_command = ['grep', '-E', 'error|warning', '/var/log/mail.log']
+postfix_data_filtered = get_command_output(postfix_command)
+postfix_data_filtered = postfix_data_filtered.replace('\n', '<br>')
+if not postfix_data_filtered:
+    postfix_data_filtered = 'Nothing to show'
+
+# Get fail2ban logs
+fail2ban_command = ['sudo', 'fail2ban-client', 'status']
+fail2ban_data = get_command_output(fail2ban_command)
+
+# Get SSH logs
+sshlog_command = ['grep', '-E', 'error|warning', '/var/log/auth.log']
+sshlog_data_filtered = get_command_output(sshlog_command)
+sshlog_data_filtered = sshlog_data_filtered.replace('\n', '<br>')
+if not sshlog_data_filtered:
+    sshlog_data_filtered = 'Nothing to show'
+
 # Save all data to a file
 output_filename = 'auto_report.txt'
 with open(output_filename, 'w') as output_file:
     output_file.write(f'<h3>Nyx Version:</h3>\n{nyx_data}\n\n')
     output_file.write(f'<h3>Tor Stats:</h3>\n{stats_data}\n\n')
     output_file.write(f'<h3>System Logs:</h3>\n{log_data_filtered}\n\n')
-    output_file.write(f'<h3>SSH Login Attempts:</h3>\n{ssh_data}\n\n')
     output_file.write(f'<h3>System Updates and Upgrades:</h3>\n{upgrade_data}\n\n')
     output_file.write(f'<h3>Port Scanning Messages:</h3>\n{port_data}\n\n')
+    output_file.write(f'<h3>Postfix Logs:</h3>\n{postfix_data_filtered}\n\n')
+    output_file.write(f'<h3>Fail2ban Status:</h3>\n{fail2ban_data}\n\n')
+    output_file.write(f'<h3>SSH Logs:</h3>\n{sshlog_data_filtered}\n\n')
 
 # Send email with auto report in body
 postfix_command = ['sendmail', '-t']
